@@ -45,7 +45,7 @@
      </script>
      <noscript><div><img src="https://mc.yandex.ru/watch/99229479" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
      <!-- /Yandex.Metrika counter -->
-      
+
 <!--==================== Preloader Start ====================-->
   <div class="preloader">
     <div class="loader"></div>
@@ -610,8 +610,10 @@
                 const duration = Math.round((Date.now() - startTime) / 1000);
             }
 
-            ym(99229479, 'reachGoal', 'book', {
-                version: window.location.pathname.includes('version_a') ? 'A' : 'B' // Определяем версию сайта
+            ym(99229479, 'reachGoal', 'complete_book', {
+                duration: duration,
+                version: window.location.pathname.includes('version-a') ? 'A' : 'B' // Определяем версию сайта
+
             });
 
             // Удаляем время старта из localStorage, чтобы избежать дублирования

@@ -611,8 +611,9 @@
                 const duration = Math.round((Date.now() - startTime) / 1000);
             }
 
-            ym(99229479, 'reachGoal', 'book', {
-                version: window.location.pathname.includes('version_a') ? 'A' : 'B' // Определяем версию сайта
+            ym(99229479, 'reachGoal', 'complete_book', {
+                duration: duration,
+                version: window.location.pathname.includes('version-a') ? 'A' : 'B' // Определяем версию сайта
             });
 
             // Удаляем время старта из localStorage, чтобы избежать дублирования
