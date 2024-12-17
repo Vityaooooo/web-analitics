@@ -142,11 +142,10 @@
                     критериям:</p>
                     <ul class="font-20" style="list-style-type: disc; padding: 20pt; margin: auto;" >
                         <li><b>Апартаменты</b></li>
-                        <li>Стоимость <b>до 5500₽ за сутки</b></li>
+                        <li>Стоимость <b>до 6000₽ за сутки</b></li>
                         <li>Находится в городе Санкт-Петербург</li>
                         <li>Количество проживающих <b>больше 3х</b> </li>
                         <li>Количество спальных мест <b>больше 1го</b></li>
-                        <li>Разрешено <b>с домашними животными</b></li>
                         <li>Разрешено <b>с детьми</b></li>
                         <li>Включены все следующие удобства: беспроводной интернет Wi-Fi,
                             постельное белье, полотенце</li>
@@ -324,7 +323,7 @@
                                                         </span>
                                                       </li>
                                                       <li class="text-list-two__item font-18">
-                                                        <span>Нельзя с питомцами</span>
+                                                        <span>Можно с питомцами</span>
                                                       </li>
                                                       <li class="text-list-two__item font-18">
                                                         <span>Без вечеринок и мероприятий</span>
@@ -393,7 +392,7 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
         </div>
         <div class="modal-body">
-          <form>
+          <form id="metricsSubmit">
             <!-- Поле Имя и Фамилия -->
             <div class="mb-3">
               <label for="fullName" class="form-label">Имя и фамилия</label>
@@ -414,7 +413,7 @@
 
             <!-- Кнопки отправки и закрытия -->
             <div class="d-flex justify-content-end">
-              <button type="submit" class="btn btn-main" onclick="endBook()">Отправить</button>
+              <button type="submit" class="btn btn-main">Отправить</button>
             </div>
           </form>
         </div>
@@ -589,21 +588,53 @@
     <script src="../js/main.js"></script>
 
     <script>
-        function endBook() {
+        const form = document.getElementById('metricsSubmit');
+
+        const URL_SHEET = 'https://script.google.com/macros/s/AKfycbxGE3AKgdQreOpe24r2mlpgZ5L1zffWdgv22WqgC5DwIUSHgHLwiVbvFJHc2lokNJiPcQ/exec';
+        form.action = URL_SHEET;
+
+        form.addEventListener('submit', (evt) => {
+            evt.preventDefault();
+
             const startTime = localStorage.getItem('bookingStartTime');
-            if (startTime) {
-            // Вычисляем время, потраченное пользователем
-                const duration = Math.round((Date.now() - startTime) / 1000);
+            const endTime = Date.now();
+            const version = localStorage.getItem('version');
+            const eventType = 'complete_booking';
+
+            let details = {
+                startTime, 
+                endTime, 
+                version, 
+                eventType
             }
 
-            ym(99229479, 'reachGoal', 'complete_book', {
-                duration: duration,
-                version: window.location.pathname.includes('version-a') ? 'A' : 'B' // Определяем версию сайта
-            });
+            let formBody = [];
 
-            // Удаляем время старта из localStorage, чтобы избежать дублирования
+            for (let property in details) {
+                let encodedKey = encodeURIComponent(property);
+                let encodedValue = encodeURIComponent(details[property]);
+                formBody.push(encodedKey + '=' + encodedValue);
+            }
+
+            formBody = formBody.join("&");
+
+            fetch(URL_SHEET, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                },
+                cors: "no-cors",
+                body: formBody,
+            })
+                .then(res => res.text())
+                .then((res) => console.log(res))
+                .catch((err) => console.log(err))
+
+            
             localStorage.removeItem('bookingStartTime');
-        }
+            localStorage.removeItem('version');
+        })
+
     </script>
 
     </body>
